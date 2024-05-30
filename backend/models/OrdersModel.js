@@ -27,6 +27,8 @@ const orderSchema = new mongoose.Schema({
         required: true
     }
 
+}, {
+    timestamps: true
 })
 
 const orderModel = mongoose.model("orders", orderSchema)

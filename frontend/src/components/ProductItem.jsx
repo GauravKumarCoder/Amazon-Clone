@@ -18,16 +18,15 @@ function ProductItem(props) {
     const dispatch = useDispatch();
 
     const {title, rating, image, id, price} = props
-    console.log("Product Item: " + id)
 
     const handleCart = async () => {
 
         if (authUser) {
-                const randomCartProductId = nanoid(15)
+                const cartproductId = nanoid(15)
                 const res = await axios.post('http://localhost:3000/api/v1/users/addtocart/', {
                     userId: authUser._id,
                     item: {
-                        cartproductId: randomCartProductId,
+                        cartproductId,
                         id,
                         title,
                         image,
@@ -39,7 +38,7 @@ function ProductItem(props) {
 
                 if (res.data.success) {
                   dispatch(itemAdded({
-                    randomCartProductId,
+                    cartproductId,
                     id,
                     title,
                     image,

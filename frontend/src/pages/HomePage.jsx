@@ -26,8 +26,6 @@ function HomePage() {
     const data = await axios.get("https://fakestoreapi.com/products");
     setProductData(data.data);
     setLoading(false);
-
-    console.log("Product Data", productData);
   }, []);
 
   return (

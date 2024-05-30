@@ -10,7 +10,8 @@ const cartSlice = createSlice({
             state.cart = action.payload
         },
         itemAdded: (state, action) => { state.cart.push(action.payload) },
-        itemDelete: (state, action) => { console.log(action.payload)
+        itemDelete: (state, action) => { 
+            console.log(action.payload)
             state.cart = state.cart.filter((item) => item.cartproductId !== action.payload)
         },
         itemOrdered: (state,action) => {state.cart = action.payload}

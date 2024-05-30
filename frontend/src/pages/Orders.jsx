@@ -16,7 +16,6 @@ function Orders() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        console.log("State Changed: ", orders)
     }, [orders])
 
     useEffect(() => {
@@ -27,8 +26,7 @@ function Orders() {
         if (authUser) {
             const userId = authUser._id
 
-            const res = await axios.get(`http://localhost:3000/api/v1/orders/getOrder/${userId}`)
-            console.log(res)            
+            const res = await axios.get(`http://localhost:3000/api/v1/orders/getOrder/${userId}`)        
             var userOrders = res.data.orders
 
               setOrders(userOrders)
@@ -68,7 +66,6 @@ function Orders() {
           ) : null}
 
           {orders.map((order) => {
-            console.log(order)
               return (
                 <>
                 <div className="w-auto  h-38 m-7 py-4 border-t-2 border-b-2 border-gray-200 flex flex-row ">

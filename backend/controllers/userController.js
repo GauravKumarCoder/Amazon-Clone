@@ -74,7 +74,7 @@ export const loginUser = async (req,res) => {
         };
 
         const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
-            expiresIn: "1d"
+            expiresIn: process.env.TOKEN_EXPIRE
         })
 
         return res.status(200).cookie("token", token, {maxAge: 1*24*60*60*1000, httpOnly: true, sameSite:'strict'}).json({
@@ -117,30 +117,19 @@ export const addtoUserCart = async (req,res) => {
 
 export const removefromCart = async (req,res) => {
     try {
-        const cartproductId = req.body.randomCartProductId
+        const randomCartProductId = req.body.cartproductId
         const user = await User.findOne({_id: req.body.userId})
     
         var cartItem = user.cart
-        cartItem = cartItem.filter((item) => item.cartproductId !== cartproductId)
-        
+        cartItem = cartItem.filter((item) => item.cartproductId !== randomCartProductId)
         
         user.cart = cartItem
         const result = await user.save()
-
-        console.log(result)
         
-        if(result) {
             return res.status(201).json({
                     msg: "Item Removed from cart",
                     success: true                
             })
-        } 
-        else {
-            return res.status(400).json({
-                msg: "Some Error",
-                success: false
-            })
-        }
         
     } catch (err) {
         console.log("Something went wrong: ",err)

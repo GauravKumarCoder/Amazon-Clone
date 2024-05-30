@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { useSelector, useDispatch } from "react-redux";
-import image1 from "./../assets/8.jpg";
 import { itemDelete, itemOrdered } from "./../redux/cartSlice";
 import toast from "react-hot-toast";
 import { Rating } from 'primereact/rating'
@@ -19,26 +18,24 @@ function Checkout() {
 
 
   useEffect(() => {
-    console.log(orderPrice)
   }, [orderPrice])
 
   useEffect(() => {
     calculateTotalPrice()
   }, [])
 
-  const handleRemoveCart = async (randomCartProductId, price) => {
+  const handleRemoveCart = async (cartproductId, price) => {
     if (authUser) {
-      console.log("Cart Product ID: ",randomCartProductId)
+      console.log("Product ID: ",cartproductId)
       const res = await axios.post(
         "http://localhost:3000/api/v1/users/removefromCart",
         {
           userId: authUser._id,
-          randomCartProductId,
+          cartproductId,
         }
       );
-
       if (res.data.success) {
-        dispatch(itemDelete(randomCartProductId));
+        dispatch(itemDelete(cartproductId));
         toast.success(res.data.msg);
         setOrderPrice(orderPrice - price);
       }
@@ -128,6 +125,7 @@ function Checkout() {
 
           {cart.length > 0
             ? cart.map((item) => {
+              console.log(item)
                 return (
                   <>
                     <div className="w-auto  h-52 m-7 border-t-2 border-b-2 border-gray-200 flex flex-row justify-between ">
@@ -155,7 +153,6 @@ function Checkout() {
                         <button
                           className=" cursor-pointer  bg-[#ffd814] text-black self-center font-verdana mt-2 font-consolas text-sm py-2 px-6 mt-4 hover:bg-[#FFBF00]"
                           onClick={() => {
-                            console.log(item)
                             handleRemoveCart(item.cartproductId, item.price)
                           }}
                         >

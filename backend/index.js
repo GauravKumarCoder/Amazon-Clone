@@ -4,7 +4,6 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
-// Importing Routes
 import userRoute from './routes/userRoutes.js'
 import orderRoute from './routes/orderRoutes.js'
 
@@ -14,12 +13,13 @@ app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true}))
 
-    
 dotenv.config({})
+
 app.use(express.json())
+app.use(cookieParser())
+
 app.use('/api/v1/users', userRoute)
 app.use('/api/v1/orders', orderRoute)
-app.use(cookieParser())
 
 app.listen(process.env.PORT, () => {
     connectDB()
