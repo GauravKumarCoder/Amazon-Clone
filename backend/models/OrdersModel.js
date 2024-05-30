@@ -4,10 +4,29 @@ import mongoose from "mongoose";
 const orderSchema = new mongoose.Schema({
     orderedBy: {
         type: ObjectId,
+        required: true
     },
-    products: {
+    productId: {
+        type:String,
+        required: true
+    },
+    productName: {
+        type: String,
+        required: true
+    },
+    productImage: {
+        type: String,
+        required: true
+    },
+    productPrice: {
+        type: Number,
+        required: true
+    },
+    productRating: {
         type: Object,
+        required: true
     }
+
 })
 
 const orderModel = mongoose.model("orders", orderSchema)

@@ -8,6 +8,7 @@ import Footer from "../components/Footer";
 import axios from "axios";
 import Carousel from "../components/Carousel";
 
+
 // Importing Images
 import image1 from "../assets/1.jpg";
 import image2 from "../assets/2.jpg";

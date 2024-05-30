@@ -2,7 +2,6 @@ import mongoose from 'mongoose'
 import User from '../models/UserModel.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import userModel from '../models/UserModel.js'
 
 
 export const createUser = async (req,res) => {
@@ -12,10 +11,22 @@ export const createUser = async (req,res) => {
             return res.status(400).json({
                 msg: "All fields are required"});
         }
+        if(password.length < 6) {
+            return res.status(400).json({
+                msg: "Password should be atleast 6 characters",
+                success: false
+            })
+        }
+
+        if(mobileNo.length < 8) {
+            return res.status(400).json({
+                msg: "Enter Valid Mobile number",
+                success: false
+            })
+        }
 
         const user  = await User.findOne({email})
         if (user) {
-            console.log(user)
             return res.status(400).json({
                 msg: "User already exists",
                 success: true});
@@ -30,7 +41,6 @@ export const createUser = async (req,res) => {
         })
         return res.status(201).json({msg: "Account created successfully", success: true});
     } catch(err) {
-        console.log ("Somethig went wrong " + err)
     }
 }
 
@@ -86,7 +96,7 @@ export const addtoUserCart = async (req,res) => {
         const user = await User.findOne({_id: req.body.userId})
     
         var cartItem = user.cart
-    
+
         cartItem.push(req.body.item)
         
         user.cart = cartItem
@@ -107,21 +117,48 @@ export const addtoUserCart = async (req,res) => {
 
 export const removefromCart = async (req,res) => {
     try {
-        const productId = req.body.productId
+        const cartproductId = req.body.randomCartProductId
         const user = await User.findOne({_id: req.body.userId})
     
         var cartItem = user.cart
-        cartItem = cartItem.filter((item) => item.id !== productId)
+        cartItem = cartItem.filter((item) => item.cartproductId !== cartproductId)
         
         
         user.cart = cartItem
-        user.save()
+        const result = await user.save()
+
+        console.log(result)
         
-        res.status(200).json({
-            msg: "Item Removed from cart",
-            success: true
-        })
+        if(result) {
+            return res.status(201).json({
+                    msg: "Item Removed from cart",
+                    success: true                
+            })
+        } 
+        else {
+            return res.status(400).json({
+                msg: "Some Error",
+                success: false
+            })
+        }
+        
     } catch (err) {
         console.log("Something went wrong: ",err)
     }
+}
+
+export const emptyCart = async (req,res) => {
+    try {
+        const user = await User.findOne({_id: req.body.userId})
+    
+        user.cart = []
+        user.save()
+        
+        res.status(200).json({
+            success: true
+        })
+    }
+    catch (err) {
+        console.log("Something went wrong: ",err)
+    } 
 }

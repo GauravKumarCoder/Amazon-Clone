@@ -3,7 +3,7 @@ import Order from '../models/OrdersModel.js'
 import User from '../models/UserModel.js'
 
 export const createOrder = async (req, res) => {
-    const {orderedBy, products} = req.body
+    const {orderedBy, productId, productName, productImage,  productPrice, productRating} = req.body
 
     try {
 
@@ -14,13 +14,20 @@ export const createOrder = async (req, res) => {
 
         const order = await Order.create({
             orderedBy,
-            products
+            productId,
+            productName, 
+            productImage,
+            productPrice,
+            productRating
         })
 
-        res.status(200).json({
-            success: true,
-            msg: "Order Placed Successfully",
-        })
+        if (order) {
+            res.status(201).json({
+                success: true,
+                msg: "Order Placed succesfully",
+            })
+        }
+
     } 
     catch (err) {
         console.log(err)
@@ -47,4 +54,30 @@ export const getUserOrders = async (req, res) => {
     } catch (err) {
         console.log(err)
     }
+}
+
+export const deleteOrder = async (req, res) => {
+    const {orderId} = req.params
+
+    try {
+        const order = await Order.findById(orderId)
+        if(!order) return res.status(400).json({message: "Order not found"}) 
+
+        
+        const deleteOrder = await Order.findByIdAndDelete(orderId)
+        
+        if(deleteOrder) {
+            return res.status(200).json({
+                success: true,
+                msg: "Your Order is cancelled"
+            })
+        } else {
+            return res.status(400).json({
+                success: false,
+                msg: "Some Error! Try again later"
+            })
+        }
+    } 
+    catch (err)  {
+      console.log(err)}
 }

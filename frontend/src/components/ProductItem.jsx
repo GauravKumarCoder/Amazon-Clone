@@ -5,6 +5,8 @@ import { Rating } from 'primereact/rating'
 import { useSelector, useDispatch } from "react-redux";
 import { itemAdded, setCart } from '../redux/cartSlice.js';
 import toast from 'react-hot-toast'
+import {nanoid} from 'nanoid'
+
 
 
 
@@ -21,9 +23,11 @@ function ProductItem(props) {
     const handleCart = async () => {
 
         if (authUser) {
+                const randomCartProductId = nanoid(15)
                 const res = await axios.post('http://localhost:3000/api/v1/users/addtocart/', {
                     userId: authUser._id,
                     item: {
+                        cartproductId: randomCartProductId,
                         id,
                         title,
                         image,
@@ -32,8 +36,10 @@ function ProductItem(props) {
                     }
                 })
 
+
                 if (res.data.success) {
                   dispatch(itemAdded({
+                    randomCartProductId,
                     id,
                     title,
                     image,

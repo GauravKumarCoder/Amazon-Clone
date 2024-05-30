@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import image1 from "./../assets/8.jpg";
 import { itemDelete, itemOrdered } from "./../redux/cartSlice";
 import toast from "react-hot-toast";
+import { Rating } from 'primereact/rating'
 import axios from "axios";
 
 function Checkout() {
@@ -25,18 +26,19 @@ function Checkout() {
     calculateTotalPrice()
   }, [])
 
-  const handleRemoveCart = async (id, price) => {
+  const handleRemoveCart = async (randomCartProductId, price) => {
     if (authUser) {
+      console.log("Cart Product ID: ",randomCartProductId)
       const res = await axios.post(
         "http://localhost:3000/api/v1/users/removefromCart",
         {
           userId: authUser._id,
-          productId: id,
+          randomCartProductId,
         }
       );
 
       if (res.data.success) {
-        dispatch(itemDelete(id));
+        dispatch(itemDelete(randomCartProductId));
         toast.success(res.data.msg);
         setOrderPrice(orderPrice - price);
       }
@@ -83,26 +85,38 @@ function Checkout() {
     const userId = authUser._id;
     const products = cart 
     if(authUser) {
-      const res = await axios.post(
-        "http://localhost:3000/api/v1/orders/createOrder",
-        {
-          orderedBy:userId,
-          products,
-        }
-      )
 
-      if(res.data.success){
+      products.map(async (item, index) => {
+        const res = await axios.post(
+          "http://localhost:3000/api/v1/orders/createOrder",
+          {
+            orderedBy:userId,
+            productId: item.id,
+            productName: item.title,
+            productImage: item.image,
+            productPrice: item.price,
+            productRating: item.rating,
+          }
+        )
 
-        dispatch(itemOrdered([]))
-        toast.success(res.data.msg)
-        navigate("/orders")
-      }
+      })
 
-      console.log(res)
+      makeCartEmpty(userId)
+      dispatch(itemOrdered([]))
+      toast.success("Order Placed Successfully")
+      navigate("/orders")
+
     } else {
       navigate('/signin') 
     }
   }
+
+  const makeCartEmpty = (userId) => {
+   return axios.post(`http://localhost:3000/api/v1/users/emptyCart/`,{
+    userId
+   })
+    }
+
 
   return (
     <div className="h-auto w-full bg-[#E6E6E6]">
@@ -129,13 +143,20 @@ function Checkout() {
                         <h4 className="text-lg font-medium font-consolas mt-6 w-full ">
                           {item.title}
                         </h4>
+                        <Rating
+        value={item.rating.rate}
+        readOnly
+        cancel={false}
+        style={{ color: "#FFBF00" }}
+      />
                         <p className="text-green-600 text-sm font-semibold font-verdana ">
                           In Stock
                         </p>
                         <button
                           className=" cursor-pointer  bg-[#ffd814] text-black self-center font-verdana mt-2 font-consolas text-sm py-2 px-6 mt-4 hover:bg-[#FFBF00]"
                           onClick={() => {
-                            handleRemoveCart(item.id, item.price)
+                            console.log(item)
+                            handleRemoveCart(item.cartproductId, item.price)
                           }}
                         >
                           Remove From Cart!
