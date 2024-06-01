@@ -24,7 +24,6 @@ function ProductItem(props) {
         if (authUser) {
                 const cartproductId = nanoid(15)
                 const res = await axios.post('http://localhost:3000/api/v1/users/addtocart/', {
-                    userId: authUser._id,
                     item: {
                         cartproductId,
                         id,
@@ -33,7 +32,11 @@ function ProductItem(props) {
                         price,
                         rating
                     }
+                }, {
+                  withCredentials: true
                 })
+
+                console.log(res)
 
 
                 if (res.data.success) {
@@ -72,6 +75,9 @@ function ProductItem(props) {
         cancel={false}
         style={{ color: "#FFBF00" }}
       />
+                              <h2 className="text-2xl  font-verdana font-bold text-right">
+                          $ {price}
+                        </h2>
 
       <center>
         <button 

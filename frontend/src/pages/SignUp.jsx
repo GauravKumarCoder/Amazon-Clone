@@ -36,7 +36,6 @@ function SignUp() {
                   toast.success(res.data.msg)
                 }
                 
-                setErrorMsg('')
                 setUser({
                     username: "",
                     password: "",

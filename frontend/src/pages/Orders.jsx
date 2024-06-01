@@ -16,7 +16,7 @@ function Orders() {
     const navigate = useNavigate()
 
     useEffect(() => {
-    }, [orders])
+    }, [orders, authUser])
 
     useEffect(() => {
         fetchUserOrders()
@@ -24,9 +24,10 @@ function Orders() {
 
     const fetchUserOrders = async () => {
         if (authUser) {
-            const userId = authUser._id
 
-            const res = await axios.get(`http://localhost:3000/api/v1/orders/getOrder/${userId}`)        
+            const res = await axios.get(`http://localhost:3000/api/v1/orders/getOrder`, {
+              withCredentials: true
+            })        
             var userOrders = res.data.orders
 
               setOrders(userOrders)
@@ -39,7 +40,9 @@ function Orders() {
 
   const cancelOrderHandler = async (orderId) => {
     if(authUser)  {
-      const res = await axios.get(`http://localhost:3000/api/v1/orders/deleteOrder/${orderId}`)
+      const res = await axios.get(`http://localhost:3000/api/v1/orders/deleteOrder/${orderId}`, {
+        withCredentials: true
+      })
 
       if(res.data.success) {
         toast.success(res.data.msg)
@@ -48,6 +51,8 @@ function Orders() {
       else {
         toast.error(res.data.msg)
       }
+    } else {
+      toast.error("Please Sign In First")
     }
   }
 

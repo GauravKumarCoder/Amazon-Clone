@@ -2,8 +2,10 @@ import mongoose from 'mongoose'
 import Order from '../models/OrdersModel.js'
 import User from '../models/UserModel.js'
 
+
 export const createOrder = async (req, res) => {
-    const {orderedBy, productId, productName, productImage,  productPrice, productRating} = req.body
+    const orderedBy = req.userId
+    const {productId, productName, productImage,  productPrice, productRating} = req.body
 
     try {
 
@@ -35,7 +37,7 @@ export const createOrder = async (req, res) => {
 }
 
 export const getUserOrders = async (req, res) => {
-    const {userId} = req.params
+    const userId = req.userId
 
     try {
         const orders = await Order.find({orderedBy: userId})
@@ -57,7 +59,8 @@ export const getUserOrders = async (req, res) => {
 }
 
 export const deleteOrder = async (req, res) => {
-    const {orderId} = req.params
+    console.log("This is wokrig")
+    const orderId = req.params.orderId
 
     try {
         const order = await Order.findById(orderId)

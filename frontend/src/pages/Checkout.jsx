@@ -26,12 +26,12 @@ function Checkout() {
 
   const handleRemoveCart = async (cartproductId, price) => {
     if (authUser) {
-      console.log("Product ID: ",cartproductId)
       const res = await axios.post(
         "http://localhost:3000/api/v1/users/removefromCart",
         {
-          userId: authUser._id,
           cartproductId,
+        }, {
+          withCredentials: true
         }
       );
       if (res.data.success) {
@@ -87,18 +87,20 @@ function Checkout() {
         const res = await axios.post(
           "http://localhost:3000/api/v1/orders/createOrder",
           {
-            orderedBy:userId,
             productId: item.id,
             productName: item.title,
             productImage: item.image,
             productPrice: item.price,
             productRating: item.rating,
+          },
+          {
+            withCredentials: true
           }
         )
 
       })
 
-      makeCartEmpty(userId)
+      makeCartEmpty()
       dispatch(itemOrdered([]))
       toast.success("Order Placed Successfully")
       navigate("/orders")
@@ -108,9 +110,9 @@ function Checkout() {
     }
   }
 
-  const makeCartEmpty = (userId) => {
-   return axios.post(`http://localhost:3000/api/v1/users/emptyCart/`,{
-    userId
+  const makeCartEmpty = () => {
+   return axios.get(`http://localhost:3000/api/v1/users/emptyCart/`, {
+    withCredentials: true
    })
     }
 
@@ -125,7 +127,6 @@ function Checkout() {
 
           {cart.length > 0
             ? cart.map((item) => {
-              console.log(item)
                 return (
                   <>
                     <div className="w-auto  h-52 m-7 border-t-2 border-b-2 border-gray-200 flex flex-row justify-between ">

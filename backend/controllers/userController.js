@@ -91,9 +91,10 @@ export const loginUser = async (req,res) => {
 }
 
 export const addtoUserCart = async (req,res) => {
+    const userId = req.userId
 
     try {
-        const user = await User.findOne({_id: req.body.userId})
+        const user = await User.findOne({_id: userId})
     
         var cartItem = user.cart
 
@@ -116,9 +117,11 @@ export const addtoUserCart = async (req,res) => {
 }
 
 export const removefromCart = async (req,res) => {
+    const userId = req.userId
+
     try {
         const randomCartProductId = req.body.cartproductId
-        const user = await User.findOne({_id: req.body.userId})
+        const user = await User.findOne({_id: userId})
     
         var cartItem = user.cart
         cartItem = cartItem.filter((item) => item.cartproductId !== randomCartProductId)
@@ -137,8 +140,10 @@ export const removefromCart = async (req,res) => {
 }
 
 export const emptyCart = async (req,res) => {
+    const userId = req.userId
+
     try {
-        const user = await User.findOne({_id: req.body.userId})
+        const user = await User.findOne({_id: userId})
     
         user.cart = []
         user.save()
@@ -150,4 +155,14 @@ export const emptyCart = async (req,res) => {
     catch (err) {
         console.log("Something went wrong: ",err)
     } 
+}
+
+export const logoutUser = async (req,res) => {
+    try {
+        return res.status(200).cookie("token", "", { maxAge: 0 }).json({
+            message: "logged out successfully."
+        })
+    } catch (error) {
+        console.log(error);
+    }
 }
