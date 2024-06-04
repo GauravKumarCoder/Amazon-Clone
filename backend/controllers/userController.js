@@ -95,6 +95,14 @@ export const addtoUserCart = async (req,res) => {
 
     try {
         const user = await User.findOne({_id: userId})
+        const {cartproductId,id,title,image,price,rating} = req.body.item
+        
+        if (!cartproductId || !id || !title || !image || !price || !rating) {
+            return res.status(400).json({
+                msg: "All fields are required",
+                success: false
+            })
+        }
     
         var cartItem = user.cart
 
@@ -119,17 +127,27 @@ export const addtoUserCart = async (req,res) => {
 export const removefromCart = async (req,res) => {
     const userId = req.userId
 
+    const selectedCartProductId = req.body.cartproductId
+
+    if (!selectedCartProductId) {
+        return res.status(400).json({
+            msg: "Cart Product ID is required",
+            success: false
+        })
+    }
+
     try {
-        const randomCartProductId = req.body.cartproductId
+
         const user = await User.findOne({_id: userId})
     
         var cartItem = user.cart
-        cartItem = cartItem.filter((item) => item.cartproductId !== randomCartProductId)
+        cartItem = cartItem.filter((item) => item.cartproductId !== selectedCartProductId)
         
         user.cart = cartItem
-        const result = await user.save()
+        await user.save()
         
-            return res.status(201).json({
+        
+        return res.status(201).json({
                     msg: "Item Removed from cart",
                     success: true                
             })
@@ -149,6 +167,7 @@ export const emptyCart = async (req,res) => {
         user.save()
         
         res.status(200).json({
+            msg: "Cart is empty now",
             success: true
         })
     }

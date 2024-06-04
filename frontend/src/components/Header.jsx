@@ -7,12 +7,14 @@ import USFlag from "../assets/USFlag.png";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setAuthUser } from "../redux/userSlice";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
   const { authUser } = useSelector((state) => state.user);
   const { cart } = useSelector((state) => state.cart);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const logoutHandler = async () => {
     const res = axios.get("http://localhost:3000/api/v1/users/logout", {
@@ -20,6 +22,7 @@ function Header() {
     });
 
     dispatch(setAuthUser(null));
+    navigate('/')
   };
 
   return (

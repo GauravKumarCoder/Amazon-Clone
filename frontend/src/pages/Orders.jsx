@@ -91,6 +91,11 @@ function Orders() {
               <p className="text-green-600 text-sm font-semibold font-verdana ">
                 Arriving in 2-3 days
               </p>
+
+
+              <h2 className="text-2xl  font-verdana font-bold">
+                          $ {order.productPrice}
+                        </h2>
             </div>
 
             <div className="h-ful min-w-48 flex justify-center items-center items-flexend">

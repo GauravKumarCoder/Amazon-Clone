@@ -40,7 +40,8 @@ export const getUserOrders = async (req, res) => {
     const userId = req.userId
 
     try {
-        const orders = await Order.find({orderedBy: userId})
+        const orders = await Order.find({orderedBy: userId}).populate("orderedBy", "username email mobileNo")
+        console.log(orders)
         
         if (orders) {
             return res.status(200).json({
@@ -59,7 +60,6 @@ export const getUserOrders = async (req, res) => {
 }
 
 export const deleteOrder = async (req, res) => {
-    console.log("This is wokrig")
     const orderId = req.params.orderId
 
     try {

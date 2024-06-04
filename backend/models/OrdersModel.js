@@ -1,9 +1,9 @@
-import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
     orderedBy: {
-        type: ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true
     },
     productId: {
